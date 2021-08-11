@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -54,5 +55,17 @@ public class EmployeesTest {
 
         assertEquals(employee.getId(), actualEmployee.getId());
 
+    }
+
+    @Test
+    void should_return_employee_by_gender_when_getEmployeeByGender_given_all_employees() {
+        Employee firstEmployee = new Employee(3, "Mamba", 18, "Male", 1500);
+        Employee secondEmployee = new Employee(4, "Mentalitee", 21, "Female", 2000);
+        when(employeeRepository.findByGender("Female")).thenReturn(Arrays.asList(firstEmployee, secondEmployee));
+        EmployeeService service = new EmployeeService(employeeRepository);
+
+        List<Employee> actualEmployee = service.findByGender("Female");
+
+        assertEquals(Arrays.asList(firstEmployee, secondEmployee), actualEmployee);
     }
 }
