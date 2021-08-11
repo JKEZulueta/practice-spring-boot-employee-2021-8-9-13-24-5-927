@@ -34,4 +34,13 @@ public class EmployeeRepository {
     public List<Employee> findByGender(String gender){
         return null;
     }
+
+    public Employee updateById(Integer employeeId, Employee updatedEmployee){
+        employees.stream()
+                .filter(employee -> employee.getId().equals(employeeId))
+                .findFirst().ifPresent(employee -> {employees.remove(employee);
+                employees.add(updatedEmployee);
+                });
+        return updatedEmployee;
+    }
 }
