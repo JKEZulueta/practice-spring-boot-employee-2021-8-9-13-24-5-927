@@ -30,4 +30,8 @@ public class EmployeeRepository {
         employees.add(employee);
         return employee;
     }
+
+    public List<Employee> findByGender(String gender){
+        return null;
+    }
 }

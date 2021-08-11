@@ -28,4 +28,8 @@ public class EmployeeService {
     public Employee findById(Integer employeeId){
         return employeeRepository.findById(employeeId);
     }
+
+    public List<Employee> findByGender(String gender){
+        return employeeRepository.findByGender(gender);
+    }
 }
