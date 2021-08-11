@@ -6,15 +6,13 @@ public class Company {
     private Integer employeeId;
     private String employeeName;
 
-    public Company(){
-
-    }
-
-    public Company(Integer companyId, String companyName, Integer employeeId, String employeeName) {
+    public Company(Integer companyId, String companyName) {
         this.companyId = companyId;
         this.companyName = companyName;
-        this.employeeId = employeeId;
-        this.employeeName = employeeName;
+    }
+
+    public Company(){
+
     }
 
     public Integer getCompanyId() {
@@ -23,13 +21,5 @@ public class Company {
 
     public String getCompanyName() {
         return companyName;
-    }
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
     }
 }
