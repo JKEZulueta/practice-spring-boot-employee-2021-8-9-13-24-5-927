@@ -34,6 +34,17 @@ public class EmployeesTest {
     }
 
     @Test
+    void should_return_employee_when_add_an_employee_given_employee() {
+        Employee employee = new Employee(1, "Mamba", 18, "Male", 1500);
+        EmployeeService service = new EmployeeService(employeeRepository);
+        when(employeeRepository.saveInto(employee)).thenReturn(employee);
+
+        Employee actualEmployee = service.create(employee);
+
+        assertEquals(employee, actualEmployee);
+    }
+
+    @Test
     void should_return_employee_when_getEmployeeById_given_all_employees() {
         Employee employee = new Employee(3, "Mamba", 18, "Male", 1500);
         when(employeeRepository.findById(employee.getId())).thenReturn(employee);
