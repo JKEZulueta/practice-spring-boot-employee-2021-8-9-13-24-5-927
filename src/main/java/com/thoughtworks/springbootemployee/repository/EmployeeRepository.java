@@ -14,6 +14,13 @@ public class EmployeeRepository {
         return employees;
     }
 
+    public Employee findById(Integer employeeId){
+        return employees.stream()
+                .filter(employee -> employee.getId().equals(employeeId))
+                .findFirst()
+                .orElse(null);
+    }
+
     public Employee add(Employee employee){
         employees.add(employee);
         return employee;
