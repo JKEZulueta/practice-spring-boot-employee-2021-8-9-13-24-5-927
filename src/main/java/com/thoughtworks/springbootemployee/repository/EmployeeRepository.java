@@ -26,7 +26,7 @@ public class EmployeeRepository {
                 .orElse(null);
     }
 
-    public Employee add(Employee employee){
+    public Employee saveInto(Employee employee){
         employees.add(employee);
         return employee;
     }
