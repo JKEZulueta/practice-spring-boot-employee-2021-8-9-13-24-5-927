@@ -16,6 +16,7 @@ public class CompanyController {
     public CompanyController(){
         companies.add(new Company(1,"KyleCompany"));
         companies.add(new Company(2, "MagicCompany"));
+        companies.add(new Company(3, "WishWashCompany"));
     }
 
     @GetMapping
