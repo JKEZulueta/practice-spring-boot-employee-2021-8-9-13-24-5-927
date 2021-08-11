@@ -21,6 +21,10 @@ public class EmployeeService {
         return employeeRepository.getAll();
     }
 
+    public Employee create(Employee employee){
+        return employeeRepository.saveInto(employee);
+    }
+
     public Employee findById(Integer employeeId){
         return employeeRepository.findById(employeeId);
     }
