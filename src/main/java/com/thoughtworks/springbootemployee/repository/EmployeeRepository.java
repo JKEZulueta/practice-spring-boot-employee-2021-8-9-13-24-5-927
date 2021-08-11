@@ -43,4 +43,11 @@ public class EmployeeRepository {
                 });
         return updatedEmployee;
     }
+
+    public void deleteById(Integer employeeId){
+        employees.stream()
+                .filter(employee -> employee.getId().equals(employeeId))
+                .findFirst()
+                .ifPresent(employees::remove);
+    }
 }
