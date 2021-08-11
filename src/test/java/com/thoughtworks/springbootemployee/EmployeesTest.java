@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class EmployeesTest {
@@ -81,5 +81,15 @@ public class EmployeesTest {
 
         assertNotEquals(normalEmployee.getSalary(), actualEmployee.getSalary());
 
+    }
+
+    @Test
+    void should_return_nothing_when_employee_deletedById_given_employee_id() {
+        Employee employee = new Employee(3, "Mamba", 18, "Male", 1500);
+        EmployeeService service = new EmployeeService(employeeRepository);
+
+        service.deleteById(employee.getId());
+
+        verify(employeeRepository, times(1)).deleteById(employee.getId());
     }
 }
