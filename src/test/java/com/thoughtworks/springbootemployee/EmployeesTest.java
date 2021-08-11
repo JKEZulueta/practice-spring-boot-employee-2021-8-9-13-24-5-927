@@ -92,4 +92,16 @@ public class EmployeesTest {
 
         verify(employeeRepository, times(1)).deleteById(employee.getId());
     }
+
+    @Test
+    void should_return_page_1_size_5_when_getBy_page_given_5_employees() {
+        List<Employee> employees = Arrays.asList(new Employee(), new Employee(), new Employee(),
+                new Employee(), new Employee());
+        when(employeeRepository.getByPage(1, 5)).thenReturn(employees);
+        EmployeeService service = new EmployeeService(employeeRepository);
+
+        List<Employee> actualEmployee = service.getByPage(1, 5);
+
+        assertEquals(5, actualEmployee.size());
+    }
 }
