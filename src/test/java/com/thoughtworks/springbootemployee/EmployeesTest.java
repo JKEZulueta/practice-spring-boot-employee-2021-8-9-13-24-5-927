@@ -14,6 +14,7 @@ import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
@@ -67,5 +68,18 @@ public class EmployeesTest {
         List<Employee> actualEmployee = service.findByGender("Female");
 
         assertEquals(Arrays.asList(firstEmployee, secondEmployee), actualEmployee);
+    }
+
+    @Test
+    void should_return_updated_employee_when_employee_update_by_id_given_employee_id() {
+        Employee normalEmployee = new Employee(3, "Mamba", 18, "Male", 1500);
+        Employee updateEmployee = new Employee(4, "Mentalitee", 21, "Female", 2000);
+        when(employeeRepository.updateById(normalEmployee.getId(), normalEmployee)).thenReturn(updateEmployee);
+        EmployeeService service = new EmployeeService(employeeRepository);
+
+        Employee actualEmployee = service.updateById(normalEmployee.getId(), normalEmployee);
+
+        assertNotEquals(normalEmployee.getSalary(), actualEmployee.getSalary());
+
     }
 }
