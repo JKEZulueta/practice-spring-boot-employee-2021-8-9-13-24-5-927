@@ -20,7 +20,7 @@ public class RetiringCompanyRepository {
                         new Employee(2, "Robert", 23, "Male", 5000))));
     }
 
-    public List<Company> getAllCompany(){
+    public List<Company> getAll(){
         return companies;
     }
 
