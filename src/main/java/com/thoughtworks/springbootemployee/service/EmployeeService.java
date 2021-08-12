@@ -2,46 +2,59 @@ package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
+import com.thoughtworks.springbootemployee.repository.RetiredEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
-    @Resource
+    @Autowired
+    private RetiredEmployeeRepository retiredEmployeeRepository;
+
+    @Autowired
     private EmployeeRepository employeeRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository){
-        this.employeeRepository = employeeRepository;
+    public EmployeeService(RetiredEmployeeRepository retiredEmployeeRepository){
+        this.retiredEmployeeRepository = retiredEmployeeRepository;
     }
 
     public List<Employee> getAllEmployees(){
-        return employeeRepository.getAll();
+        return employeeRepository.findAll();
     }
 
     public Employee create(Employee employee){
-        return employeeRepository.saveInto(employee);
+       return employeeRepository.save(employee);
     }
 
     public Employee findById(Integer employeeId){
-        return employeeRepository.findById(employeeId);
+        Optional<Employee> findById = employeeRepository.findById(employeeId);
+        employeeRepository.findById(employeeId);
+        return findById.orElse(null);
     }
 
-    public List<Employee> findByGender(String gender){
-        return employeeRepository.findByGender(gender);
+    public Employee deleteById(Integer employeeId){
+        Optional<Employee> toBeRemove = employeeRepository.findById(employeeId);
+        employeeRepository.deleteById(employeeId);
+        return toBeRemove.orElse(null);
+    }
+
+    public List<Employee> findAllByGender(String gender){
+        return employeeRepository.findAllByGender(gender);
     }
 
     public Employee updateById(Integer employeeId, Employee employee){
-        return employeeRepository.updateById(employeeId, employee);
+        Employee updateById = employeeRepository.findById(employeeId).orElse(null);
+
+        return employeeRepository.save(updateById);
+
     }
 
-    public void deleteById(Integer employeeId){
-         employeeRepository.deleteById(employeeId);
-    }
 
-    public List<Employee> getByPage(Integer pageIndex, Integer pageSize){
-        return employeeRepository.getByPage(pageIndex, pageSize);
-    }
+
+//    public List<Employee> getByPage(Integer pageIndex, Integer pageSize){
+//        return retiredEmployeeRepository.getByPage(pageIndex, pageSize);
+//    }
 }
