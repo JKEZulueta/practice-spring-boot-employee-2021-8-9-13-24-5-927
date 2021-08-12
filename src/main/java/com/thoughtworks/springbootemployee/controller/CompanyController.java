@@ -32,5 +32,9 @@ public class CompanyController {
         return companyService.getEmployeeByCompanyId(companyId);
     }
     
+    @PostMapping
+    public Company createNewCompany(@RequestBody Company company){
+        return companyService.addCompany(company);
+    }
 
 }
