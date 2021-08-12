@@ -40,4 +40,26 @@ public class EmployeeIntegrationTest {
                 .andExpect(jsonPath("$[0].salary").value(9999));
     }
 
+    @Test
+    void should_create_employee_when_call_create_employee_api() throws Exception {
+        //Given
+        String employee = "{\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\":  \"Kyle\",\n" +
+                "    \"age\": 23, \n" +
+                "    \"gender\": \"male\",\n" +
+                "    \"salary\": 9999\n" +
+                "}";
+
+//        System.out.println(employee);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employee))
+                .andExpect(jsonPath("$.name").value("Kyle"))
+                .andExpect(jsonPath("$.gender").value("male"))
+                .andExpect(jsonPath("$.salary").value("9999"));
+        //Then
+    }
+
 }
