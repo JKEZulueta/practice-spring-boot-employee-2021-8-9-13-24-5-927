@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class EmployeesController {
     @Autowired
     EmployeeService employeeService;
+
     private final List<Employee> employees = new ArrayList<>();
 
     public EmployeesController() {
@@ -29,30 +31,17 @@ public class EmployeesController {
 
     @GetMapping(path = "/{employeeId}")
     public Employee findById(@PathVariable Integer employeeId) {
-        return employees.stream()
-                .filter((employee -> employee.getId().equals(employeeId)))
-                .findFirst()
-                .orElse(null);
+        return employeeService.findById(employeeId);
     }
 
     @GetMapping(params = "gender")
     public List<Employee> findByGender(@RequestParam("gender") String gender) {
-        return employees.stream()
-                .filter((employee -> employee.getGender().equals(gender)))
-                .collect(Collectors.toList());
+        return employeeService.findAllByGender(gender);
     }
 
     @DeleteMapping("/{employeeId}")
     public Employee delete(@PathVariable Integer employeeId) {
-        Employee toBeRemoved = employees.stream()
-                .filter(employee -> employee.getId()
-                        .equals(employeeId))
-                .findFirst().orElse(null);
-        if (toBeRemoved != null) {
-            employees.remove(toBeRemoved);
-            return toBeRemoved;
-        }
-        return null;
+        return employeeService.deleteById(employeeId);
     }
 
     @GetMapping(params = {"pageIndex", "pageSize"})
@@ -66,11 +55,7 @@ public class EmployeesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee create(@RequestBody Employee employee) {
-        Employee employeeToBeAdded = new Employee(employees.size() + 1, employee.getName(),
-                employee.getAge(), employee.getGender(), employee.getSalary());
-        employees.add(employeeToBeAdded);
-
-        return employeeToBeAdded;
+       return employeeService.create(employee);
     }
 
     @PutMapping(path = "/{employeeId}")
