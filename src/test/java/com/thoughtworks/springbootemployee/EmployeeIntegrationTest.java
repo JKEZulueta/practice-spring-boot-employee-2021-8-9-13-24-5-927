@@ -2,7 +2,9 @@ package com.thoughtworks.springbootemployee;
 
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +23,10 @@ public class EmployeeIntegrationTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    @AfterEach
+    void tearDown(){
+        employeeRepository.deleteAll();
+    }
 
     @Test
     void should_return_all_employees_when_call_get_employees_api() throws Exception {
@@ -62,4 +68,31 @@ public class EmployeeIntegrationTest {
         //Then
     }
 
+    @Test
+    void should_update_employee_when_call_update_employee_api() throws Exception {
+        //Given
+        final Employee employee = new Employee(1, "Kyle", 23, "male", 9999);
+        final Employee savedEmployee = employeeRepository.save(employee);
+        String employeeWithNewInfo = "{\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\":  \"Kyle\",\n" +
+                "    \"age\": 21, \n" +
+                "    \"gender\": \"male\",\n" +
+                "    \"salary\": 8888\n" +
+                "}";
+        //when
+
+
+        //Then
+        int id = savedEmployee.getId();
+        mockMvc.perform(MockMvcRequestBuilders.put("/employees/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(employeeWithNewInfo))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Kyle"))
+                .andExpect(jsonPath("$.age").value("21"))
+                .andExpect(jsonPath("$.gender").value("male"))
+                .andExpect(jsonPath("$.salary").value("8888"));
+
+    }
 }
