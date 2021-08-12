@@ -3,9 +3,11 @@ package com.thoughtworks.springbootemployee.service;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
@@ -24,8 +26,16 @@ public class CompanyService {
         return companyRepository.getCompanyById(companyId);
     }
 
-    public List<Employee> getEmployeesByCompanyId(Integer companyId){
-        return companyRepository.getEmployeesByCompanyId(companyId);
+    public Company findEmpyById(Integer companyId){
+        return companyRepository.getAllCompany()
+                .stream()
+                .filter(company -> company.getCompanyId().equals(companyId))
+                .findAny()
+                .orElse(null);
+    }
+
+    public List<Employee> getEmployeeByCompanyId(Integer companyId){
+        return findEmpyById(companyId).getEmployees();
     }
 
 }
