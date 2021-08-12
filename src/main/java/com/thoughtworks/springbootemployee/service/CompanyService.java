@@ -37,7 +37,8 @@ public class CompanyService {
     }
 
     public List<Employee> getEmployeeByCompanyId(Integer companyId){
-        return findEmptyById(companyId).getEmployees();
+        Company company = companyRepository.findById(companyId).orElse(null);
+        return company.getEmployees();
     }
 
     public Company addCompany(Company company){
