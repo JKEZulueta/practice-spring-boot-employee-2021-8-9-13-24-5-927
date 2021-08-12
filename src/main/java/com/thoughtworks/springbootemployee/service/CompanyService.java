@@ -38,4 +38,8 @@ public class CompanyService {
         return findEmpyById(companyId).getEmployees();
     }
 
+    public Company addCompany(Company company){
+        return companyRepository.addCompany(company);
+    }
+
 }

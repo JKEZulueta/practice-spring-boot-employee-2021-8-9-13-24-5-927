@@ -31,11 +31,9 @@ public class CompanyRepository {
                 .orElse(null);
     }
 
-    public List<Employee> getEmployeesByCompanyId(Integer companyId){
-        EmployeeRepository employeeRepository = new EmployeeRepository();
-        return employeeRepository.getAll().stream()
-                .filter(employee -> employee.getId().equals(companyId))
-                .collect(Collectors.toList());
+    public Company addCompany(Company company) {
+        companies.add(company);
+        return company;
     }
 
 }
