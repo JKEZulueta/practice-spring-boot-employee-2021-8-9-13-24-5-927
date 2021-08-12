@@ -3,31 +3,33 @@ package com.thoughtworks.springbootemployee.service;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
-import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
+import com.thoughtworks.springbootemployee.repository.RetiringCompanyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
+    private RetiringCompanyRepository retiringCompanyRepository;
+
+
     private CompanyRepository companyRepository;
 
 
-    public CompanyService(CompanyRepository companyRepository){
-        this.companyRepository = companyRepository;
+    public CompanyService(RetiringCompanyRepository retiringCompanyRepository){
+        this.retiringCompanyRepository = retiringCompanyRepository;
     }
 
     public List<Company> getAllCompany(){
-        return companyRepository.getAllCompany();
+        return companyRepository.findAll();
     }
 
     public Company getCompanyById(Integer companyId){
-        return companyRepository.getCompanyById(companyId);
+        return retiringCompanyRepository.getCompanyById(companyId);
     }
 
-    public Company findEmpyById(Integer companyId){
-        return companyRepository.getAllCompany()
+    public Company findEmptyById(Integer companyId){
+        return retiringCompanyRepository.getAllCompany()
                 .stream()
                 .filter(company -> company.getCompanyId().equals(companyId))
                 .findAny()
@@ -35,11 +37,32 @@ public class CompanyService {
     }
 
     public List<Employee> getEmployeeByCompanyId(Integer companyId){
-        return findEmpyById(companyId).getEmployees();
+        return findEmptyById(companyId).getEmployees();
     }
 
     public Company addCompany(Company company){
-        return companyRepository.addCompany(company);
+        return companyRepository.save(company);
     }
+
+
+
+    public Company update(Integer companyId, Company updateCompanyDetails) {
+        return retiringCompanyRepository.getAllCompany().stream()
+                .filter(company -> company.getCompanyId().equals(companyId))
+                .findFirst()
+                .map(company -> updateCompanyInformation(company, updateCompanyDetails))
+                .orElse(null);
+    }
+
+    private Company updateCompanyInformation(Company company, Company companyUpdate) {
+        if (companyUpdate.getCompanyName() != null) {
+            company.setCompanyName(companyUpdate.getCompanyName());
+        }
+        if (!companyUpdate.getEmployees().isEmpty() && companyUpdate.getEmployees() != null) {
+            company.setEmployees(companyUpdate.getEmployees());
+        }
+        return company;
+    }
+
 
 }
