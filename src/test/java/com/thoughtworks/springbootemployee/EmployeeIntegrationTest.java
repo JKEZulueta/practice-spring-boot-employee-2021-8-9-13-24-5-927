@@ -95,4 +95,18 @@ public class EmployeeIntegrationTest {
                 .andExpect(jsonPath("$.salary").value("8888"));
 
     }
+
+    @Test
+    void should_delete_employee_when_delete_given_employee_id_delete_api() throws Exception {
+        //Given
+
+        //When
+        //Then
+        mockMvc.perform(MockMvcRequestBuilders.delete("/employees/{id}", 130))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Kyle"))
+                .andExpect(jsonPath("$.age").value(25))
+                .andExpect(jsonPath("$.gender").value("male"))
+                .andExpect(jsonPath("$.salary").value(100));
+    }
 }
