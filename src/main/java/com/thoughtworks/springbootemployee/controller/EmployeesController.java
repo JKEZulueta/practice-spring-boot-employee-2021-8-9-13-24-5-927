@@ -17,6 +17,9 @@ public class EmployeesController {
     @Autowired
     EmployeeService employeeService;
 
+    @Autowired
+    EmployeeRepository employeeRepository;
+
     private final List<Employee> employees = new ArrayList<>();
 
     public EmployeesController() {
@@ -57,11 +60,9 @@ public class EmployeesController {
 
     @PutMapping(path = "/{employeeId}")
     public Employee update(@PathVariable Integer employeeId, @RequestBody Employee employeeUpdate) {
-        return employees.stream()
-                .filter(employee -> employee.getId().equals(employeeId))
-                .findFirst()
-                .map(employee -> updateEmployeeInformation(employee, employeeUpdate))
-                .get();
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+
+        return updateEmployeeInformation(employee, employeeUpdate);
     }
 
     private Employee updateEmployeeInformation(Employee employee, Employee employeeUpdate) {
