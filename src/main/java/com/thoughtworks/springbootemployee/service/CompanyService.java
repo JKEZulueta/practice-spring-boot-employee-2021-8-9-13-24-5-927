@@ -16,20 +16,20 @@ public class CompanyService {
     private CompanyRepository companyRepository;
 
 
-    public CompanyService(RetiringCompanyRepository retiringCompanyRepository){
-        this.retiringCompanyRepository = retiringCompanyRepository;
+    public CompanyService(CompanyRepository companyRepository){
+        this.companyRepository = companyRepository;
     }
 
-    public List<Company> getAllCompany(){
+    public List<Company> getAllCompanies(){
         return companyRepository.findAll();
     }
 
-    public Company getCompanyById(Integer companyId){
-        return retiringCompanyRepository.getCompanyById(companyId);
+    public Company findById(Integer companyId) {
+        return companyRepository.findAllByCompanyId(companyId);
     }
 
     public Company findEmptyById(Integer companyId){
-        return retiringCompanyRepository.getAllCompany()
+        return retiringCompanyRepository.getAll()
                 .stream()
                 .filter(company -> company.getCompanyId().equals(companyId))
                 .findAny()
@@ -47,7 +47,7 @@ public class CompanyService {
 
 
     public Company update(Integer companyId, Company updateCompanyDetails) {
-        return retiringCompanyRepository.getAllCompany().stream()
+        return retiringCompanyRepository.getAll().stream()
                 .filter(company -> company.getCompanyId().equals(companyId))
                 .findFirst()
                 .map(company -> updateCompanyInformation(company, updateCompanyDetails))
