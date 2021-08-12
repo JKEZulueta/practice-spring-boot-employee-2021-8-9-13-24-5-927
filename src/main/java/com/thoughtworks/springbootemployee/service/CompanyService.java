@@ -45,14 +45,10 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-
-
     public Company update(Integer companyId, Company updateCompanyDetails) {
-        return retiringCompanyRepository.getAll().stream()
-                .filter(company -> company.getCompanyId().equals(companyId))
-                .findFirst()
-                .map(company -> updateCompanyInformation(company, updateCompanyDetails))
-                .orElse(null);
+        Company updateById = companyRepository.findById(companyId).orElse(null);
+
+        return updateCompanyInformation(updateById, updateCompanyDetails);
     }
 
     private Company updateCompanyInformation(Company company, Company companyUpdate) {
