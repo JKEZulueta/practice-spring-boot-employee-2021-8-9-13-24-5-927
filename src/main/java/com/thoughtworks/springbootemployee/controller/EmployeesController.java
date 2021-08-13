@@ -1,9 +1,6 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.thoughtworks.springbootemployee.mapper.EmployeeMapper;
-import com.thoughtworks.springbootemployee.entity.Employee;
-import com.thoughtworks.springbootemployee.model.EmployeeRequest;
-import com.thoughtworks.springbootemployee.model.EmployeeResponse;
+import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import com.thoughtworks.springbootemployee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/employees")
@@ -23,8 +21,6 @@ public class EmployeesController {
     EmployeeRepository employeeRepository;
 
     private final List<Employee> employees = new ArrayList<>();
-    @Autowired
-    private EmployeeMapper employeeMapper;
 
     public EmployeesController() {
         employees.add(new Employee(1, "Bert", 25, "Male", 100));
@@ -37,8 +33,8 @@ public class EmployeesController {
     }
 
     @GetMapping(path = "/{employeeId}")
-    public EmployeeResponse findById(@PathVariable Integer employeeId) {
-        return employeeMapper.toResponse(employeeService.findById(employeeId));
+    public Employee findById(@PathVariable Integer employeeId) {
+        return employeeService.findById(employeeId);
     }
 
     @GetMapping(params = "gender")
@@ -58,13 +54,15 @@ public class EmployeesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeResponse create(@RequestBody EmployeeRequest employeeRequest) {
-       return employeeMapper.toResponse(employeeService.create(employeeMapper.toEntity(employeeRequest)));
+    public Employee create(@RequestBody Employee employee) {
+       return employeeService.create(employee);
     }
 
     @PutMapping(path = "/{employeeId}")
-    public EmployeeResponse update(@PathVariable Integer employeeId, @RequestBody EmployeeRequest employeeRequest) {
-        return employeeMapper.toResponse(employeeService.updateById(employeeId, employeeMapper.toEntity(employeeRequest)));
+    public Employee update(@PathVariable Integer employeeId, @RequestBody Employee employeeUpdate) {
+        Employee employee = employeeRepository.findById(employeeId).orElse(null);
+
+        return updateEmployeeInformation(employee, employeeUpdate);
     }
 
     private Employee updateEmployeeInformation(Employee employee, Employee employeeUpdate) {
