@@ -1,10 +1,10 @@
 package com.thoughtworks.springbootemployee;
 
-import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.entity.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -85,7 +85,7 @@ public class EmployeeIntegrationTest {
 
         //Then
         int id = savedEmployee.getId();
-        mockMvc.perform(MockMvcRequestBuilders.put("/employees/{id}", id)
+        mockMvc.perform(MockMvcRequestBuilders.put("/employees/{id}", id) //Id since only used once
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(employeeWithNewInfo))
                 .andExpect(status().isOk())
@@ -99,14 +99,32 @@ public class EmployeeIntegrationTest {
     @Test
     void should_delete_employee_when_delete_given_employee_id_delete_api() throws Exception {
         //Given
-
+        final Employee employee = new Employee(1, "Kyle", 23, "male", 9999);
+        final Employee savedEmployee = employeeRepository.save(employee); //Delete
         //When
         //Then
-        mockMvc.perform(MockMvcRequestBuilders.delete("/employees/{id}", 130))
+        int id = savedEmployee.getId();
+        mockMvc.perform(MockMvcRequestBuilders.delete("/employees/{id}",  id)) //Check the value if != exist $[0].id).doesNotExist())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Kyle"))
-                .andExpect(jsonPath("$.age").value(25))
+                .andExpect(jsonPath("$.age").value(23))
                 .andExpect(jsonPath("$.gender").value("male"))
-                .andExpect(jsonPath("$.salary").value(100));
+                .andExpect(jsonPath("$.salary").value(9999));
+
+    }
+
+    @Test
+    void should_return_employee_when_findAllByGender_given_employee_param_gender() throws Exception{
+        String gender = "female";
+
+        final Employee firstEmployee = new Employee(1, "Kyle", 25, "male", 1000);
+        final Employee secondEmployee = new Employee(2, "Kylaver", 19, "female", 500);
+        final Employee thirdEmployee = new Employee(3, "Jan", 26, "male", 1000);
+        employeeRepository.saveAll(Lists.list(firstEmployee, secondEmployee, thirdEmployee));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/employees").param("gender", gender))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Kylaver"));
+
     }
 }
