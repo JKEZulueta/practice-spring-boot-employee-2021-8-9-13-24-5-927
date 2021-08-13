@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.service;
 
-import com.thoughtworks.springbootemployee.model.Employee;
+import com.thoughtworks.springbootemployee.exception.EmployeeNotFoundException;
+import com.thoughtworks.springbootemployee.entity.Employee;
 import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import com.thoughtworks.springbootemployee.repository.RetiredEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,10 @@ public class EmployeeService {
     }
 
     public Employee findById(Integer employeeId){
-        Optional<Employee> findById = employeeRepository.findById(employeeId);
-        employeeRepository.findById(employeeId);
-        return findById.orElse(null);
+
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee ID not found."));
+
     }
 
     public Employee deleteById(Integer employeeId){
@@ -48,9 +50,29 @@ public class EmployeeService {
 
     public Employee updateById(Integer employeeId, Employee employee){
         Employee updateById = employeeRepository.findById(employeeId).orElse(null);
+        if(updateById != null){
+            updateEmployeeInformation(updateById, employee);
+            return create(updateById);
+        }
+        return null;
+    }
 
-        return employeeRepository.save(updateById);
-
+    private void updateEmployeeInformation(Employee employee, Employee employeeUpdate) {
+        if(employeeUpdate.getAge() != null) {
+            employee.setAge(employeeUpdate.getAge());
+        }
+        if (employeeUpdate.getGender() != null) {
+            employee.setGender(employeeUpdate.getGender());
+        }
+        if (employeeUpdate.getSalary() != null) {
+            employee.setSalary(employeeUpdate.getSalary());
+        }
+        if (employeeUpdate.getName() != null) {
+            employee.setName(employeeUpdate.getName());
+        }
+        if (employeeUpdate.getCompanyId() != null) {
+            employee.setCompanyId(employeeUpdate.getCompanyId());
+        }
     }
 
     public List<Employee> getEmployeesByPagination(Integer pageIndex, Integer pageSize){
