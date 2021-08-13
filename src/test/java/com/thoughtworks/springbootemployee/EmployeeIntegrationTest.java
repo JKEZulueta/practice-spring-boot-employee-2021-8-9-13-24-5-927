@@ -127,4 +127,19 @@ public class EmployeeIntegrationTest {
                 .andExpect(jsonPath("$[0].name").value("Kylaver"));
 
     }
+
+    @Test
+    void should_return_employee_when_findById_given_employee_with_id() throws Exception{
+        final Employee firstEmployee = new Employee(1, "Kyle", 25, "male", 1000);
+        final Employee secondEmployee = new Employee(2, "Kylaver", 19, "female", 500);
+        final Employee thirdEmployee = new Employee(3, "Jan", 26, "male", 1000);
+        employeeRepository.saveAll(Lists.list(firstEmployee, secondEmployee, thirdEmployee));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/employees/{id}", 2))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Kylaver"))
+                .andExpect(jsonPath("$.age").value(19))
+                .andExpect(jsonPath("$.salary").value(500))
+                .andExpect(jsonPath("$.gender").value("female"));
+    }
 }
