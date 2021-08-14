@@ -32,8 +32,8 @@ public class EmployeesController {
     }
 
     @GetMapping()
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public List<EmployeeResponse> getAllEmployees() {
+        return employeeMapper.listResponse(employeeService.getAllEmployees());
     }
 
     @GetMapping(path = "/{employeeId}")
@@ -42,18 +42,18 @@ public class EmployeesController {
     }
 
     @GetMapping(params = "gender")
-    public List<Employee> findByGender(@RequestParam("gender") String gender) {
-        return employeeService.findAllByGender(gender);
+    public List<EmployeeResponse> findByGender(@RequestParam("gender") String gender) {
+        return employeeMapper.listResponse(employeeService.findAllByGender(gender));
     }
 
     @DeleteMapping("/{employeeId}")
-    public Employee delete(@PathVariable Integer employeeId) {
-        return employeeService.deleteById(employeeId);
+    public EmployeeResponse delete(@PathVariable Integer employeeId) {
+        return employeeMapper.toResponse(employeeService.deleteById(employeeId));
     }
 
     @GetMapping(params = {"pageIndex", "pageSize"})
-    public List<Employee> getListByPagination(@RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize) {
-        return employeeService.getEmployeesByPagination(pageIndex, pageSize);
+    public List<EmployeeResponse> getListByPagination(@RequestParam("pageIndex") Integer pageIndex, @RequestParam("pageSize") Integer pageSize) {
+        return employeeMapper.listResponse(employeeService.getEmployeesByPagination(pageIndex, pageSize));
     }
 
     @PostMapping
@@ -65,22 +65,6 @@ public class EmployeesController {
     @PutMapping(path = "/{employeeId}")
     public EmployeeResponse update(@PathVariable Integer employeeId, @RequestBody EmployeeRequest employeeRequest) {
         return employeeMapper.toResponse(employeeService.updateById(employeeId, employeeMapper.toEntity(employeeRequest)));
-    }
-
-    private Employee updateEmployeeInformation(Employee employee, Employee employeeUpdate) {
-        if(employeeUpdate.getAge() != null) {
-            employee.setAge(employeeUpdate.getAge());
-        }
-        if (employeeUpdate.getGender() != null) {
-            employee.setGender(employeeUpdate.getGender());
-        }
-        if (employeeUpdate.getSalary() != null) {
-            employee.setSalary(employeeUpdate.getSalary());
-        }
-        if (employeeUpdate.getName() != null) {
-            employee.setName(employeeUpdate.getName());
-        }
-        return employee;
     }
 
 }
