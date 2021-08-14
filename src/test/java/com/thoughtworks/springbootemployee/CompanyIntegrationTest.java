@@ -11,7 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,14 +34,15 @@ public class CompanyIntegrationTest {
 
     @Test
     void should_return_employees_when_get_employees_by_company_id_given_company() throws Exception{
-        Company company = new Company(1, "KyleComp",
-                Arrays.asList(new Employee(1, "Kyle", 23, "Male", 5000)));
+        List<Employee> myEmployees = new ArrayList<>();
+        Company company = new Company(1, "KyleComp", myEmployees);
+        myEmployees.add(new Employee(1, "Kyle", 23, "Male", 5000));
         companyRepository.save(company);
 
         Integer id = company.getCompanyId();
-        mockMvc.perform(MockMvcRequestBuilders.get("/companies/{id}/employees", id))
+        mockMvc.perform(MockMvcRequestBuilders.get("/companies/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1));
+                .andExpect(jsonPath("$.employees").exists());
 
     }
 }
