@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee.service;
 
 import com.thoughtworks.springbootemployee.entity.Company;
 import com.thoughtworks.springbootemployee.entity.Employee;
+import com.thoughtworks.springbootemployee.exception.CompanyNotFoundException;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import com.thoughtworks.springbootemployee.repository.RetiringCompanyRepository;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.List;
 @Service
 public class CompanyService {
     private RetiringCompanyRepository retiringCompanyRepository;
+    final String companyException = "Company ID not found.";
 
 
     private CompanyRepository companyRepository;
@@ -25,19 +27,14 @@ public class CompanyService {
     }
 
     public Company findById(Integer companyId) {
-        return companyRepository.findAllByCompanyId(companyId);
+        return companyRepository.findById(companyId).orElseThrow(() ->
+                new CompanyNotFoundException(companyException));
     }
 
-    public Company findEmptyById(Integer companyId){
-        return retiringCompanyRepository.getAll()
-                .stream()
-                .filter(company -> company.getCompanyId().equals(companyId))
-                .findAny()
-                .orElse(null);
-    }
 
     public List<Employee> getEmployeeByCompanyId(Integer companyId){
-        Company company = companyRepository.findById(companyId).orElse(null);
+        Company company = companyRepository.findById(companyId).orElseThrow(() ->
+                new CompanyNotFoundException(companyException));
         return company.getEmployees();
     }
 
@@ -46,7 +43,8 @@ public class CompanyService {
     }
 
     public Company update(Integer companyId, Company updateCompanyDetails) {
-        Company updateById = companyRepository.findById(companyId).orElse(null);
+        Company updateById = companyRepository.findById(companyId).orElseThrow(() ->
+                new CompanyNotFoundException(companyException));
 
         return updateCompanyInformation(updateById, updateCompanyDetails);
     }
@@ -59,6 +57,13 @@ public class CompanyService {
             company.setEmployees(companyUpdate.getEmployees());
         }
         return company;
+    }
+
+    public Company delete(Integer companyId){
+        Company toRemove = companyRepository.findById(companyId).orElseThrow(() ->
+                new CompanyNotFoundException(companyException));
+        companyRepository.deleteById(companyId);
+        return toRemove;
     }
 
 
