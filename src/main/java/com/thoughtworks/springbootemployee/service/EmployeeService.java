@@ -34,8 +34,8 @@ public class EmployeeService {
     }
 
     public Employee findById(Integer employeeId){
-        return employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException(employeeException));
+        return employeeRepository.findById(employeeId).orElseThrow(() ->
+                new EmployeeNotFoundException(employeeException));
     }
 
     public Employee deleteById(Integer employeeId){

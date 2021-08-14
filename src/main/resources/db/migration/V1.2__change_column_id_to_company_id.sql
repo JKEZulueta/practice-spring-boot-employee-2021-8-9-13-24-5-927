@@ -1,0 +1,1 @@
+ALTER TABLE company RENAME column id To company_id;
