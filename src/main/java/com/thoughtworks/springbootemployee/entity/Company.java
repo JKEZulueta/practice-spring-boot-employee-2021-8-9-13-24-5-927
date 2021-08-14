@@ -6,6 +6,13 @@ import java.util.List;
 
 @Entity
 public class Company {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer companyId;
+    private String companyName;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyId")
+    private List<Employee> employees = new ArrayList<>();
+
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
     }
@@ -18,12 +25,6 @@ public class Company {
         this.employees = employees;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer companyId;
-    private String companyName;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyId")
-    private List<Employee> employees = new ArrayList<>();
 
     public Company(Integer companyId, String companyName, List<Employee> employees) {
         this.companyId = companyId;
