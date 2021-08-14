@@ -139,8 +139,8 @@ public class EmployeeIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Kylaver"))
                 .andExpect(jsonPath("$.age").value(19))
-                .andExpect(jsonPath("$.salary").value(500))
-                .andExpect(jsonPath("$.gender").value("female"));
+                .andExpect(jsonPath("$.gender").value("female"))
+                .andExpect(jsonPath("$.salary").value(500));
     }
 
     @Test
