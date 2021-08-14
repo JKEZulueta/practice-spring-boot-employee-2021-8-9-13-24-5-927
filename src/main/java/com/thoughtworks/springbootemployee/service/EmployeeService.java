@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Service
 public class EmployeeService {
+    final String employeeException = "Employee ID Not found.";
+
     @Autowired
     private RetiredEmployeeRepository retiredEmployeeRepository;
 
@@ -34,14 +36,14 @@ public class EmployeeService {
     public Employee findById(Integer employeeId){
 
         return employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee ID not found."));
+                .orElseThrow(() -> new EmployeeNotFoundException(employeeException));
 
     }
 
     public Employee deleteById(Integer employeeId){
         Optional<Employee> toBeRemove = employeeRepository.findById(employeeId);
         employeeRepository.deleteById(employeeId);
-        return toBeRemove.orElse(null);
+        return toBeRemove.orElseThrow(() -> new EmployeeNotFoundException(employeeException));
     }
 
     public List<Employee> findAllByGender(String gender){
@@ -49,7 +51,7 @@ public class EmployeeService {
     }
 
     public Employee updateById(Integer employeeId, Employee employee){
-        Employee updateById = employeeRepository.findById(employeeId).orElse(null);
+        Employee updateById = employeeRepository.findById(employeeId).orElseThrow(() -> new EmployeeNotFoundException(employeeException));
         if(updateById != null){
             updateEmployeeInformation(updateById, employee);
             return create(updateById);
